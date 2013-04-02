@@ -103,17 +103,15 @@
 	};
 
 	// If ads in head are enabled register check handler for ghostwriter
-	if (window.wgLoadAdsInHead) {
-		ghostwriter.handlers = ghostwriter.handlers || {};
-		ghostwriter.handlers.check = checkHandler;
+	ghostwriter.handlers = ghostwriter.handlers || {};
+	ghostwriter.handlers.check = checkHandler;
 
-		// We need to reverse what happens in ghostwriter function setDocumentOverrides
-		ghostwriter(document.documentElement, {
-			done: function () {
-				ghostwriter.flushloadhandlers();
-			}
-		}); // this initializes ghostwriter without doing much harm
-		document.write = document.nativeWrite;
-	}
+	// We need to reverse what happens in ghostwriter function setDocumentOverrides
+	ghostwriter(document.documentElement, {
+		done: function () {
+			ghostwriter.flushloadhandlers();
+		}
+	}); // this initializes ghostwriter without doing much harm
+	document.write = document.nativeWrite;
 
 }(window, document, location, ghostwriter));

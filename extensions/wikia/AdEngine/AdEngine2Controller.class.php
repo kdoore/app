@@ -44,14 +44,7 @@ class AdEngine2Controller extends WikiaController {
 	}
 
 	public static function areAdsInHead() {
-		static $cached = null;
-
-		if ($cached === null) {
-			$wg = F::app()->wg;
-			$cached = $wg->Request->getBool('adsinhead', (bool) $wg->LoadAdsInHead);
-		}
-
-		return $cached;
+		return F::app()->wg->IsGASpecialWiki;
 	}
 
 	/**

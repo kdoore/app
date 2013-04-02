@@ -35,6 +35,8 @@
 		adProviderLater,
 		adProviderNull,
 		slotTweaker,
+		start,
+		addOnLoad,
 
 		queueForLateAds,
 		adConfigForLateAds;
@@ -82,7 +84,16 @@
 		adProviderNull
 	);
 
-	window.wgAfterContentAndJS.push(function () {
+	addOnLoad = function (fn) {
+		window.wgAfterContentAndJS.push(function () {
+			// jQuery is available in this place
+			window.$(window).on('load', fn);
+		});
+	};
+
+	window.adslots2 = window.adslots2 || [];
+
+	start = function () {
 		log('work on window.adslots2 according to AdConfig2', 1, module);
 		tracker.track({
 			eventName: 'liftium.init',
@@ -91,9 +102,8 @@
 			ga_label: 'adengine2',
 			trackingMethod: 'ad'
 		});
-		window.adslots2 = window.adslots2 || [];
 		adEngine.run(adConfig, window.adslots2);
-	});
+	};
 
 	// DART API for Liftium
 	window.LiftiumDART = {
@@ -163,5 +173,17 @@
 
 	// Register window.wikiaDartHelper so jwplayer can use it
 	window.wikiaDartHelper = wikiaDart;
+
+	// Decide when to launch the ads
+	if (abTest.inGroup('ORDER_OF_AD_LOADING', 'LOAD_ASAP')) {
+		// Now
+		start();
+	} else if (abTest.inGroup('ORDER_OF_AD_LOADING', 'LOAD_ONLOAD')) {
+		// On load
+		addOnLoad(start);
+	} else {
+		// On DOM ready
+		window.wgAfterContentAndJS.push(start);
+	}
 
 }(Wikia.log, Wikia.Tracker, window, ghostwriter, document, Geo, Wikia.LazyQueue, Wikia.Cookies, Wikia.Cache, Krux, Wikia.AbTest));

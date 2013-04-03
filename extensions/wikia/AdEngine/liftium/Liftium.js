@@ -2765,7 +2765,7 @@ if (LiftiumOptions.error_beacon !== false ){
 
 // Gentlemen, Start your optimization!
 
-if (window.wgAdDriverStartLiftiumOnLoad) {
+if (window.wgAdDriverStartLiftiumOnLoad || Wikia.AbTest.getGroup('ORDER_OF_AD_LOADING')) {
 	Liftium.addEventListener(window, 'load', Liftium.init);
 } else {
 	if (Liftium.empty(LiftiumOptions.offline)){
